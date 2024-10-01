@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Good fundraiser net</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="navbar">
+    <p style="float:left; font-weight:bold">Good Fundraiser Net</p>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/search">Search</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="container">
+    <main class="main-content" id="search">
+        <div id="searchDiv">
+            <h1>Search Fundraisers</h1>
+
+            <form id="searchForm">
+                <div id="Category" class="card">
+                    <p>Category:</p>
+                </div>
+                <div id="Organizer" class="card">
+                    <p>Organizer:</p>
+                </div>
+                <div id="City" class="card">
+                    <p>City:</p>
+                </div>
+                <button type="submit">Search</button>
+                <button type="reset">Reset Checker Box</button>
+            </form>
+        </div>
+        <div id="dataDiv"></div>
+
+
+    </main>
+</div>
+<footer class="footer">
+    <p>© 2024 Good Fundraiser Net | All rights reserved.</p>
+</footer>
+<script>
+    /**
+     * Get Categories detail and put it into checkbox
+     */
+    fetch("http://localhost:8888/api/getCategory")
+        .then(response => response.json())
+        .then(data=>{
+            const dataDiv = document.getElementById("Category");
+            if(data.length >0){
+                data.forEach(category=>{
+                    const newCheckerBox = document.createElement("div");
+                    newCheckerBox.classList.add("checkbox-container");
+                    newCheckerBox.innerHTML= `
+                    <input type="checkbox" id="${category.NAME}" name="${category.NAME}">
+                    <label for="${category.NAME}">${category.NAME}</label>`;
+                    dataDiv.appendChild(newCheckerBox);
+                });
+            }
+            else{
+                const newLine=document.createElement("div");
+                newLine.innerHTML="No Category available";
+                dataDiv.appendChild(newLine);
+            }
+        })
+        .catch(error=>{
+            const dataDiv = document.getElementById("Category");
+            console.error("Error while fetching data",error);
+            const newLine=document.createElement("div");
+            newLine.innerHTML="Error to load data";
+            dataDiv.appendChild(newLine);
+        })
+
+    /**
+     * Get Organizer detail and put it into checkbox
+     */
+    fetch("http://localhost:8888/api/getOrganizer")
+        .then(response => response.json())
+        .then(data=>{
+            const dataDiv = document.getElementById("Organizer");
+            if(data.length >0){
+                data.forEach(organizer=>{
+                    const newCheckerBox = document.createElement("div");
+                    newCheckerBox.classList.add("checkbox-container");
+                    newCheckerBox.innerHTML= `
+                    <input type="checkbox" id="${organizer.ORGANIZER}" name="${organizer.ORGANIZER}">
+                    <label for="${organizer.ORGANIZER}">${organizer.ORGANIZER}</label>`;
+                    dataDiv.appendChild(newCheckerBox);
+                });
+            }
+            else{
+                const newLine=document.createElement("div");
+                newLine.innerHTML="No Category available";
+                dataDiv.appendChild(newLine);
+            }
+        })
+        .catch(error=>{
+            const dataDiv = document.getElementById("Organizer");
+            console.error("Error while fetching data",error);
+            const newLine=document.createElement("div");
+            newLine.innerHTML="Error to load data";
+            dataDiv.appendChild(newLine);
+        })
+    /**
+     * Get City detail and put it into checkbox
+     */
+    fetch("http://localhost:8888/api/getCity")
+        .then(response => response.json())
+        .then(data=>{
+            const dataDiv = document.getElementById("City");
+            if(data.length >0){
+                data.forEach(city=>{
+                    const newCheckerBox = document.createElement("div");
+                    newCheckerBox.classList.add("checkbox-container");
+                    newCheckerBox.innerHTML= `
+                    <input type="checkbox" id="${city.CITY}" name="${city.CITY}">
+                    <label for="${city.CITY}">${city.CITY}</label>`;
+                    dataDiv.appendChild(newCheckerBox);
+                });
+            }
+            else{
+                const newLine=document.createElement("div");
+                newLine.innerHTML="No city available";
+                dataDiv.appendChild(newLine);
+            }
+        })
+        .catch(error=>{
+            const dataDiv = document.getElementById("Organizer");
+            console.error("Error while fetching data",error);
+            const newLine=document.createElement("div");
+            newLine.innerHTML="Error to load data";
+            dataDiv.appendChild(newLine);
+        })
+    /**
+     * Search for fundraiser that fit the criteria
+     */
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // prevent default form submission
+        // get the values of the checkboxes
+        const organizer = document.getElementById('organizer').checked ? 'OrganizerName' : '';
+        const city = document.getElementById('city').checked ? 'CityName' : '';
+        const category_id = document.getElementById('category_id').checked ? 'CategoryID' : '';
+
+        // build query parameters
+        let queryParams = [];
+        if (organizer) queryParams.push(`organizer=${encodeURIComponent(organizer)}`);
+        if (city) queryParams.push(`city=${encodeURIComponent(city)}`);
+        if (category_id) queryParams.push(`category_id=${encodeURIComponent(category_id)}`);
+        // build url
+        let query = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+        let link = `/fundraisers${query}`;
+        fetch(link)
+            .then(response=>response.json())
+    });
+</script>
+</body>
+</html>
