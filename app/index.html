@@ -40,7 +40,12 @@
                 const newP = document.createElement("p");
                 newP.innerHTML=`
                     <a href="/fundraiser?FUNDRAISER_ID=${fundraiser.FUNDRAISER_ID}" style="font-weight:bold">${fundraiser.CAPTION}</a>
-                    <p>Organizer: ${fundraiser.ORGANIZER}</p>`;
+                    <p>ID:${fundraiser.FUNDRAISER_ID}</p>
+                    <p>Organizer: ${fundraiser.ORGANIZER}</p>
+                    <p>Category: ${fundraiser.NAME}</p>
+                    <p>City: ${fundraiser.CITY}</p>
+                    <p>Target: ${fundraiser.TARGET_FUNDING}$</p>
+                    <p>Current: ${fundraiser.CURRENT_FUNDING}$</p>`;
                 newCard.appendChild(newP);
                 dataDiv.appendChild(newCard);
             });

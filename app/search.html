@@ -18,17 +18,17 @@
 </header>
 <div class="container">
     <main class="main-content" id="search">
-        <div id="searchDiv">
-            <h1>Search Fundraisers</h1>
-
+        <h1>Search Fundraisers</h1>
+        <div id="searchDiv" class="card">
+            <p>Filter:</p>
             <form id="searchForm">
-                <div id="Category" class="card">
+                <div id="Category" class="card2">
                     <p>Category:</p>
                 </div>
-                <div id="Organizer" class="card">
+                <div id="Organizer" class="card2">
                     <p>Organizer:</p>
                 </div>
-                <div id="City" class="card">
+                <div id="City" class="card2">
                     <p>City:</p>
                 </div>
                 <button type="submit">Search</button>
@@ -137,23 +137,57 @@
         })
     /**
      * Search for fundraiser that fit the criteria
+     * This method will first get selected checker box, and read the title
+     * and put them into the url then search for the fundraiser
      */
     document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault(); // prevent default form submission
-        // get the values of the checkboxes
-        const organizer = document.getElementById('organizer').checked ? 'OrganizerName' : '';
-        const city = document.getElementById('city').checked ? 'CityName' : '';
-        const category = document.getElementById('category').checked ? 'Category' : '';
+        // clear the result space
+        const dataDiv = document.getElementById("dataDiv").innerHTML='';
 
+
+        /* get the values of the checkboxes */
+        // get selected organizer
+        const organizerCheck = document.querySelectorAll('#Organizer input[type="checkbox"]'); // get all checkboxes
+        const selectedOrganizer = []; // create an empty array
+        organizerCheck.forEach(checkbox => { // loop through each checkbox
+            if (checkbox.checked) { // if the checkbox is checked
+                const label = checkbox.parentElement.textContent.trim() // get the label text
+                selectedOrganizer.push(`${label}`); // add the label to the array
+            }
+        });
+        // get selected city
+        const cityCheck = document.querySelectorAll('#City input[type="checkbox"]'); // get all checkboxes
+        const selectedCity = []; // create an empty array
+        cityCheck.forEach(checkbox => { // loop through each checkbox
+            if (checkbox.checked) { // if the checkbox is checked
+                const label = checkbox.parentElement.textContent.trim(); // get the label text
+                selectedCity.push(`${label}`); // add the label to the array
+            }
+        });
+        // get selected category
+        const categoryCheck = document.querySelectorAll('#Category input[type="checkbox"]'); // get all checkboxes
+        const selectedCategory = []; // create an empty array
+        categoryCheck.forEach(checkbox => { // loop through each checkbox
+            if (checkbox.checked) { // if the checkbox is checked
+                const label = checkbox.parentElement.textContent.trim(); // get the label text
+                selectedCategory.push(`${label}`); // add the label to the array
+            }
+        });
         // build query parameters
-        let queryParams = [];
-        if (organizer) queryParams.push(`organizer=${encodeURIComponent(organizer)}`);
-        if (city) queryParams.push(`city=${encodeURIComponent(city)}`);
-        if (category) queryParams.push(`category=${encodeURIComponent(category)}`);
-        // build url
-        let query = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
-        let link = `/fundraisers${query}`;
-        fetch(link)
+
+        const queryParams = new URLSearchParams();
+        if (selectedOrganizer.length > 0) { // if user selected at least one organizer
+            queryParams.append('organizer', selectedOrganizer.join(','));
+        }
+        if (selectedCity.length > 0) {
+            queryParams.append('city', selectedCity.join(','));
+        }
+        if (selectedCategory.length > 0) {
+            queryParams.append('category', selectedCategory.join(','));
+        }
+        fetch(`http://localhost:8888/api/searchFundraiser?${queryParams.toString()}`)
+
             .then(response=>response.json())
             .then(data=>{
                 const dataDiv = document.getElementById("dataDiv");
