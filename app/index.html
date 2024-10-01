@@ -31,13 +31,13 @@
 <script>
     fetch("http://localhost:8888/api/getActiveFundraiser")
     .then(response => response.json())
-    .then(data =>{
-        const dataDiv = document.getElementById("dataDiv");
-        if(data.length >0){
-            data.forEach(fundraiser=>{
-                const newCard=document.createElement("div");
+    .then(data =>{ // get the data
+        const dataDiv = document.getElementById("dataDiv"); // get the div with id dataDiv
+        if(data.length >0){ // if it has data
+            data.forEach(fundraiser=>{ // loop through the data
+                const newCard=document.createElement("div");// create a card
                 newCard.classList.add("card");
-                const newP = document.createElement("p");
+                const newP = document.createElement("p"); // create a paragraph
                 newP.innerHTML=`
                     <a href="/fundraiser?FUNDRAISER_ID=${fundraiser.FUNDRAISER_ID}" style="font-weight:bold">${fundraiser.CAPTION}</a>
                     <p>ID:${fundraiser.FUNDRAISER_ID}</p>
@@ -46,15 +46,15 @@
                     <p>City: ${fundraiser.CITY}</p>
                     <p>Target: ${fundraiser.TARGET_FUNDING}$</p>
                     <p>Current: ${fundraiser.CURRENT_FUNDING}$</p>`;
-                newCard.appendChild(newP);
-                dataDiv.appendChild(newCard);
+                newCard.appendChild(newP); // append it
+                dataDiv.appendChild(newCard);// append it
             });
         }
         else{
-                const newCard=document.createElement("div");
-                newCard.classList.add("card");
-                newCard.innerHTML="No Fundraiser";
-                dataDiv.appendChild(newCard);
+                const newCard=document.createElement("div"); // create a card
+                newCard.classList.add("card"); // make it as a card
+                newCard.innerHTML="No Fundraisers";// show no fundraisers
+                dataDiv.appendChild(newCard);// append it
         }
         })
     .catch(error=>{

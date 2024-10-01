@@ -142,6 +142,7 @@
      */
     document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault(); // prevent default form submission
+
         // clear the result space
         const dataDiv = document.getElementById("dataDiv").innerHTML='';
 
@@ -175,7 +176,6 @@
             }
         });
         // build query parameters
-
         const queryParams = new URLSearchParams();
         if (selectedOrganizer.length > 0) { // if user selected at least one organizer
             queryParams.append('organizer', selectedOrganizer.join(','));
@@ -185,6 +185,10 @@
         }
         if (selectedCategory.length > 0) {
             queryParams.append('category', selectedCategory.join(','));
+        }
+        if (selectedOrganizer.length === 0 && selectedCity.length === 0 && selectedCategory.length === 0) {
+            alert('Please select at least one organizer, city, or category to proceed.'); // Show error message
+            return; // Exit the function to prevent fetching data from database
         }
         fetch(`http://localhost:8888/api/searchFundraiser?${queryParams.toString()}`)
 

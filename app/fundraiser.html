@@ -15,9 +15,57 @@
     </ul>
   </nav>
 </header>
-<div class="container"></div>
+<div class="container">
+    <div class="main-content">
+        <h1>Fundraiser Details</h1>
+        <div id="dataDiv"></div>
+
+    </div>
+</div>
 <footer class="footer">
     <p>© 2024 Good Fundraiser Net | All rights reserved.</p>
 </footer>
+<script>
+    const urlParams = new URLSearchParams(window.location.search); // get the url parameters
+    const id = urlParams.get('FUNDRAISER_ID'); // get the id from the url
+
+    if (id) { // if it has id
+        fetch(`http://localhost:8888/api/fundraiser/${id}`) // call the api
+            .then(response => response.json())
+            .then(data =>{ // get the data
+                const dataDiv = document.getElementById("dataDiv");
+                if(data.length >0){ // if it has data
+                    data.forEach(fundraiser=>{ // loop through the data
+                        const newCard=document.createElement("div"); // make it as a div
+                        newCard.classList.add("card"); // make it as a card
+                        const newP = document.createElement("p"); // make it as a paragraph
+                        newP.innerHTML=`
+                    <a href="/fundraiser?FUNDRAISER_ID=${fundraiser.FUNDRAISER_ID}" style="font-weight:bold">${fundraiser.CAPTION}</a>
+                    <p>ID:${fundraiser.FUNDRAISER_ID}</p>
+                    <p>Organizer: ${fundraiser.ORGANIZER}</p>
+                    <p>Category: ${fundraiser.NAME}</p>
+                    <p>City: ${fundraiser.CITY}</p>
+                    <p>Target: ${fundraiser.TARGET_FUNDING}$</p>
+                    <p>Current: ${fundraiser.CURRENT_FUNDING}$</p>
+                    <br>
+                    <button onclick="donate()" id="button">Donate</button>`;
+                        newCard.appendChild(newP); // append it
+                        dataDiv.appendChild(newCard); // append it
+                    });
+                }
+                else{
+                    const newCard=document.createElement("div"); // create a card
+                    newCard.classList.add("card");
+                    newCard.innerHTML="No Such Fundraiser"; // show no such fundraiser
+                    dataDiv.appendChild(newCard);
+                }
+            })
+            .catch(err => console.error('Error fetching fundraiser details:', err));
+    }
+
+    function donate(){
+        alert("This feature is under construction");
+    }
+</script>
 </body>
 </html>
