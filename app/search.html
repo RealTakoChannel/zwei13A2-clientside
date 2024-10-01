@@ -191,7 +191,6 @@
             return; // Exit the function to prevent fetching data from database
         }
         fetch(`http://localhost:8888/api/searchFundraiser?${queryParams.toString()}`)
-
             .then(response=>response.json())
             .then(data=>{
                 const dataDiv = document.getElementById("dataDiv");
